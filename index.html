@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test TensorflowJS</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"> </script>
+    <script src="https://requirejs.org/docs/release/2.3.5/minified/require.js"> </script>
+    <script src="https://docs.opencv.org/3.4.0/opencv.js" type="text/javascript"></script>
+    <script>
+        console.log("loading model...")
+        async function loadModel() {
+            model = undefined;
+            model = await tf.loadLayersModel("https://raw.githubusercontent.com/MarvinZhong/untitledProjectModel/main/model.json");
+            console.log("model loaded")
+        }
+        loadModel();
+
+        function make_predict() {
+            const picture =  document.getElementById('pic');
+            let tensor = tf.browser.fromPixels(picture);
+            const resized = tf.image.resizeBilinear(tensor, [64, 64]).toFloat();
+            const batched = resized.expandDims(0)
+
+            const offset = tf.scalar(255);
+            const normalized  = batched.sub(offset).div(offset);
+            
+
+            const result = model.predict(normalized);
+            const outputResult = result.dataSync();
+
+            if (outputResult[0] > 0.5) {
+                document.getElementById("result").innerHTML = "Cata";
+            }else{
+                document.getElementById("result").innerHTML = "Norm";
+            }
+
+            // document.getElementById("result").innerHTML = Number(outputResult[0] > 0.5);
+            console.log(outputResult)
+            console.log(outputResult[0]);
+            console.log(result);
+            console.log(Number(outputResult[0] > 0.5));
+            // (Number(outputResult[0] > 0.5) == 0)
+        }
+    </script>
+</head>
+<body>
+    <!-- false Norm 5* 6* 33* 44 -->
+    <!-- 2 16 17 21 22 29 30 32 39 41 43 -->
+    <!-- false Cata 0 5 10 11 14 19 20* 25 28* 30 31 32 33 35 38 39 40 41-->
+    <!-- 0 1 2 3 4 5 6 -->
+    <img src="phase1_data2_original\cataract\cata1.jpg" id="pic">
+    <button onclick="make_predict()">Make Predict</button>
+    <div id="result"></div>
+</body>
+</html>
