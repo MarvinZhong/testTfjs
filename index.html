@@ -23,14 +23,16 @@
             const resized = tf.image.resizeBilinear(tensor, [64, 64]).toFloat();
             const batched = resized.expandDims(0)
 
-            const offset = tf.scalar(255);
-            const normalized  = batched.sub(offset).div(offset);
+            // const offset = tf.scalar(255);
+            // const normalized  = batched.sub(offset).div(offset);
             
 
-            const result = model.predict(normalized);
+            const result = model.predict(batched);
             const outputResult = result.dataSync();
 
-            if (outputResult[0] > 0.5) {
+            // if (Number(outputResult[0] > 0.5) == 0) 
+            // if (outputResult[0] > 0.5)
+            if (Number(outputResult[0] > 0.5) == 0) {
                 document.getElementById("result").innerHTML = "Cata";
             }else{
                 document.getElementById("result").innerHTML = "Norm";
@@ -41,7 +43,6 @@
             console.log(outputResult[0]);
             console.log(result);
             console.log(Number(outputResult[0] > 0.5));
-            // (Number(outputResult[0] > 0.5) == 0)
         }
     </script>
 </head>
@@ -50,7 +51,7 @@
     <!-- 2 16 17 21 22 29 30 32 39 41 43 -->
     <!-- false Cata 0 5 10 11 14 19 20* 25 28* 30 31 32 33 35 38 39 40 41-->
     <!-- 0 1 2 3 4 5 6 -->
-    <img src="phase1_data2_original\cataract\cata1.jpg" id="pic">
+    <img src="phase1_data2_original\cataract\cata8.jpg" id="pic">
     <button onclick="make_predict()">Make Predict</button>
     <div id="result"></div>
 </body>
