@@ -30,8 +30,8 @@
             const result = model.predict(batched);
             const outputResult = result.dataSync();
 
-            // if (Number(outputResult[0] > 0.5) == 0) 
-            // if (outputResult[0] > 0.5)
+            // if (Number(outputResult[0] > 0.5) == 0) without scalar
+            // if (outputResult[0] > 0.5) with scalar
             if (Number(outputResult[0] > 0.5) == 0) {
                 document.getElementById("result").innerHTML = "Cata";
             }else{
